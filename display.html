@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payroll Display</title>
+  <style>
+    body {
+      background-color: #e6e6e6;
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .payroll-box {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      padding: 30px;
+      width: 380px;
+      text-align: left;
+    }
+
+    h2 {
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+
+    .section {
+      margin-bottom: 15px;
+    }
+
+    .label {
+      font-weight: bold;
+    }
+
+    .value {
+      float: right;
+    }
+
+    .deductions {
+      margin-top: 15px;
+      border-top: 2px solid #000;
+      padding-top: 10px;
+    }
+
+    .net-pay {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+      text-align: center;
+      border-top: 2px solid #000;
+      padding-top: 10px;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      background-color: #0033cc;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #002299;
+    }
+  </style>
+</head>
+<body>
+  <div class="payroll-box">
+    <h2>PAYROLL PROGRAM</h2>
+    <div id="payrollInfo"></div>
+    <button onclick="goBack()">← Back to Form</button>
+  </div>
+
+  <script>
+    const data = JSON.parse(localStorage.getItem('employeeData'));
+
+    if (!data) {
+      window.location.href = 'index.html';
+    }
+
+    const grossPay = data.rate * data.days;
+
+    const sss = grossPay * 0.05;
+    const pagibig = grossPay * 0.03;
+    const philhealth = grossPay * 0.02;
+    const tax = grossPay * 0.05;
+    const totalDeduction = sss + pagibig + philhealth + tax;
+    const netPay = grossPay - totalDeduction;
+
+    const payrollDisplay = `
+      <div class="section"><span class="label">ID:</span> <span class="value">${data.idNumber}</span></div>
+      <div class="section"><span class="label">NAME:</span> <span class="value">${data.lastName}, ${data.firstName} ${data.middleName ? data.middleName.charAt(0) + '.' : ''}</span></div>
+      <div class="section"><span class="label">POSITION:</span> <span class="value">${data.position}</span></div>
+      <div class="section"><span class="label">RATE:</span> <span class="value">${data.rate.toFixed(2)}</span></div>
+      <div class="section"><span class="label">DAYS:</span> <span class="value">${data.days}</span></div>
+      <div class="section"><span class="label">GROSS PAY:</span> <span class="value">${grossPay.toFixed(2)}</span></div>
+      
+      <div class="deductions">
+        <div><span class="label">DEDUCTIONS</span></div>
+        <div>SSS (5%): <span class="value">${sss.toFixed(2)}</span></div>
+        <div>PAG-IBIG (3%): <span class="value">${pagibig.toFixed(2)}</span></div>
+        <div>PHILHEALTH (2%): <span class="value">${philhealth.toFixed(2)}</span></div>
+        <div>TAX (5%): <span class="value">${tax.toFixed(2)}</span></div>
+        <div><strong>TOTAL DEDUCTION:</strong> <span class="value">${totalDeduction.toFixed(2)}</span></div>
+      </div>
+
+      <div class="net-pay">NET PAY: ₱${netPay.toFixed(2)}</div>
+    `;
+
+    document.getElementById('payrollInfo').innerHTML = payrollDisplay;
+
+    function goBack() {
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>
